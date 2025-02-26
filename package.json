@@ -1,6 +1,6 @@
 {
   "name": "minipug",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Extract LLM-friendly representation of a webpage",
   "main": "index.mjs",
   "type": "module",
