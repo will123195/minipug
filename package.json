@@ -1,0 +1,23 @@
+{
+  "name": "minipug",
+  "version": "1.0.0",
+  "description": "Extract LLM-friendly representation of a webpage",
+  "main": "index.mjs",
+  "type": "module",
+  "scripts": {
+    "test": "node test.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/will123195/minipug.git"
+  },
+  "author": "will123195",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/will123195/minipug/issues"
+  },
+  "homepage": "https://github.com/will123195/minipug#readme",
+  "devDependencies": {
+    "puppeteer": "^21.5.0"
+  }
+}
