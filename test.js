@@ -26,6 +26,10 @@ const createTestHtml = async () => {
     <section class="example-section">
       <p>This is an example.</p>
       <button aria-label="Next page" class="z2iX5wAef9nHv">Next page</button>
+      <form>
+        <input type="text" id="searchInput" placeholder="Search...">
+        <input type="email" id="emailInput" placeholder="Email...">
+      </form>
     </section>
   </body>
 </html>
@@ -45,8 +49,11 @@ const runTest = async () => {
   
   try {
     await page.goto(testFileUrl);
+    
+    // Test 1: Basic conversion without focus
+    console.log('\nTest 1: Basic conversion without focus');
     const miniPugCode = await fs.readFile('./index.mjs', 'utf8');
-    const result = await page.evaluate(async (code) => {
+    let result = await page.evaluate(async (code) => {
       const blob = new Blob([code], { type: 'application/javascript' });
       const url = URL.createObjectURL(blob);
       
@@ -57,19 +64,44 @@ const runTest = async () => {
       return minipug.convert();
     }, miniPugCode);
     
-    const expectedOutput = `h1 Hello World\nsection\n  p This is an example.\n  button(aria-label="Next page") Next page`;
+    const expectedOutput = `h1 Hello World\nsection\n  p This is an example.\n  button(aria-label="Next page") Next page\n  form\n    input(type="text" placeholder="Search...")\n    input(type="email" placeholder="Email...")`;
     
-    console.log('\nValidation:');
+    console.log('\nValidation for basic conversion:');
     if (result.trim() === expectedOutput.trim()) {
       console.log('✅ Test passed! Output matches expected result.');
     } else {
       console.log('❌ Test failed! Output does not match expected result.');
       console.log('\nExpected:');
       console.log(expectedOutput);
-      console.log(expectedOutput.length);
       console.log('\nActual:');
       console.log(result);
-      console.log(result.length);
+      process.exitCode = 1;
+    }
+    
+    // Test 2: Conversion with focus
+    console.log('\nTest 2: Conversion with focus');
+    result = await page.evaluate(async (code) => {
+      const blob = new Blob([code], { type: 'application/javascript' });
+      const url = URL.createObjectURL(blob);
+      
+      const MiniPugModule = await import(url);
+      const MiniPug = MiniPugModule.default;
+      
+      // Focus the search input
+      document.getElementById('searchInput').focus();
+      
+      const minipug = new MiniPug(document);
+      return minipug.convert();
+    }, miniPugCode);
+    
+    // Check if the focused attribute is present in the output
+    console.log('\nValidation for focus detection:');
+    if (result.includes('input(type="text" placeholder="Search..." focused)')) {
+      console.log('✅ Focus detection test passed! The focused attribute is correctly applied.');
+    } else {
+      console.log('❌ Focus detection test failed! The focused attribute is missing.');
+      console.log('\nActual output:');
+      console.log(result);
       process.exitCode = 1;
     }
   } finally {

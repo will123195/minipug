@@ -32,11 +32,11 @@ export default class MiniPug {
           'aria-describedby', 'aria-disabled', 'aria-haspopup', 'aria-invalid', 
           'aria-labelledby', 'aria-live', 'aria-pressed', 'aria-required', 'aria-selected',
           'aria-checked', 'aria-valuenow', 'aria-valuemin', 'aria-valuemax', 'role', 'title', 'alt',
-          'disabled', 'readonly'
+          'disabled', 'readonly', 'focused'
       ]);
 
       this.booleanAttributes = new Set([
-          'checked', 'selected', 'disabled', 'readonly', 'required'
+          'checked', 'selected', 'disabled', 'readonly', 'required', 'focused'
       ]);
   }
 
@@ -225,6 +225,11 @@ export default class MiniPug {
           } else if (capturedValue.trim() !== '') {
               attributes['value'] = capturedValue;
           }
+      }
+      
+      // Check if element has focus
+      if (element === this.document.activeElement) {
+          attributes['focused'] = true;
       }
 
       return attributes;
