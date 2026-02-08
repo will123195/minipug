@@ -32,7 +32,8 @@ export default class MiniPug {
           'aria-describedby', 'aria-disabled', 'aria-haspopup', 'aria-invalid', 
           'aria-labelledby', 'aria-live', 'aria-pressed', 'aria-required', 'aria-selected',
           'aria-checked', 'aria-valuenow', 'aria-valuemin', 'aria-valuemax', 'role', 'title', 'alt',
-          'disabled', 'readonly', 'focused'
+          'disabled', 'readonly', 'focused',
+          'data-testid'
       ]);
 
       this.booleanAttributes = new Set([
@@ -209,8 +210,9 @@ export default class MiniPug {
           if (this.booleanAttributes.has(attr.name)) {
               // For boolean attributes, include them only if they exist
               attributes[attr.name] = true;
-          } else if (attr.value.trim() !== '') {
-              // For non-boolean attributes, include only if they have non-empty values
+          } else if (attr.value.trim() !== '' && attr.value.length <= 150
+              && !attr.value.startsWith('data:')
+              && !attr.value.trimStart().toLowerCase().startsWith('javascript:')) {
               attributes[attr.name] = attr.value;
           }
       }
